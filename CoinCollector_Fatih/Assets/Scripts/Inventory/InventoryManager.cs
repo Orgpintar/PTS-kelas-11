@@ -20,6 +20,8 @@ public class InventoryManager : MonoBehaviour, GrabableItem
         CreateInventorySlots();
     }
 
+    
+
     // Update is called once per frame
     void Update()
     {
@@ -48,16 +50,23 @@ public class InventoryManager : MonoBehaviour, GrabableItem
             return;
         }
 
+        // First, try to stack the item onto a slot that already holds the same item
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].CanStackWith(item.ItemName))
+            {
+                itemSlots[i].AddQuantity(item.Quantity);
+                return;
+            }
+        }
+
+        // Otherwise, put the item into the first empty slot
         for (int i = 0; i < itemSlots.Length; i++)
         {
             if (!itemSlots[i].isFulled)
             {
                 itemSlots[i].AddItem(item);
-                break;
-            }
-            else
-            {
-                Debug.LogWarning($"ItemSlot at index {i} is null.", this);
+                return;
             }
         }
     }
@@ -68,22 +77,24 @@ public class InventoryManager : MonoBehaviour, GrabableItem
 
         if (slotPrefabs == null)
         {
-            Debug.LogError("ItemSlot prefab not found in Resources folder.");
-            itemSlots = new ItemSlot[0]; // Initialize with an empty array to avoid null reference
-
+            Debug.LogError("ItemSlot prefab was not found in a Resources folder.", this);
+            itemSlots = new ItemSlot[0];
             return;
         }
+        // Put the slots inside the GridLayoutGroup container (InventorySlots), if there is one
         Transform parent = InventoryCanvas.transform;
         GridLayoutGroup grid = InventoryCanvas.GetComponentInChildren<GridLayoutGroup>(true);
-        if(grid != null)
+        if (grid != null)
         {
             parent = grid.transform;
         }
 
         itemSlots = new ItemSlot[slotCount];
-        for (int i = 0; i < slotCount; i++)
+        for (int i = 0; i < itemSlots.Length; i++)
         {
             itemSlots[i] = Instantiate(slotPrefabs, parent);
         }
+
+        
     }
 }

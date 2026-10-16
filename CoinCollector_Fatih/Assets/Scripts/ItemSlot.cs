@@ -5,7 +5,7 @@ using TMPro;
 public class ItemSlot : MonoBehaviour
 {
     [SerializeField] private TMP_Text quantityText;
-    // [SerializeField] private TMP_Text itemQuantityText;
+    [SerializeField] private int maxStackSize = 99;
     [SerializeField] private Image itemIconImage;
     public string itemName;
     public int itemQuantity;
@@ -15,14 +15,22 @@ public class ItemSlot : MonoBehaviour
     public void AddItem(ItemDetails itemDetails)
     {
         itemName = itemDetails.ItemName;
-        itemQuantity = itemDetails.Quantity;
         itemIcon = itemDetails.ItemIcon;
-
-        quantityText.text  = itemQuantity.ToString();
-        quantityText.enabled = true;
-        itemIconImage.sprite = itemIcon;
-
-        isFulled = true;
+        AddQuantity(itemDetails.Quantity);
     }
     
+    public bool CanStackWith(string otherItemName)
+    {
+        return !isFulled && itemName == otherItemName;
+    }
+
+    public void AddQuantity(int amount)
+    {
+        itemQuantity += amount;
+        isFulled = itemQuantity >= maxStackSize;
+
+        quantityText.text = itemQuantity.ToString();
+        quantityText.enabled = true;
+        itemIconImage.sprite = itemIcon;
+    }  
 }
