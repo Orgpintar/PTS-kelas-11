@@ -6,10 +6,9 @@ public class InventoryManager : MonoBehaviour, GrabableItem
 {
     InputAction inventoryAction;
     [SerializeField] private GameObject InventoryCanvas;
-    private bool InventoryActive;
     [SerializeField] private int slotCount = 16;
     private ItemSlot[] itemSlots;
-    
+    private bool InventoryActive;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -94,7 +93,14 @@ public class InventoryManager : MonoBehaviour, GrabableItem
         {
             itemSlots[i] = Instantiate(slotPrefabs, parent);
         }
+    }
 
-        
+    public void DesselectAllSlots()
+    {
+        foreach (var slot in itemSlots)
+        {
+            slot.selectedItem.SetActive(false);
+            slot.isSelected = false;
+        }
     }
 }

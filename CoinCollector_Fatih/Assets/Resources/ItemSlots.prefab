@@ -305,11 +305,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ef2ecdb393b744f8cb1ce3e6709249, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedItem: {fileID: 7461247039170895173}
+  isSelected: 0
   quantityText: {fileID: 8490701613485355662}
+  maxStackSize: 99
   itemIconImage: {fileID: 4437566299278254728}
   itemName: 
   itemQuantity: 0
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   isFulled: 0
 --- !u!1 &7461247039170895173
 GameObject:
@@ -328,7 +331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6403264045619509803
 RectTransform:
   m_ObjectHideFlags: 0
