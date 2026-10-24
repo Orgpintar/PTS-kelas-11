@@ -1,51 +1,61 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
-    //selectable item slot for inventory system
-    public GameObject selectedItem;
-    public bool isSelected;
-    //Item Slot properties
-    [SerializeField] private TMP_Text quantityText;
-    [SerializeField] private int maxStackSize = 99;
-    [SerializeField] private Image itemIconImage;
+    // Item Data
     public string itemName;
     public int itemQuantity;
     public Sprite itemIcon;
-    public bool isFulled;
+    public bool isFull;
 
-    private InventoryManager inventoryManager;
-    
+    // Item Slot
+    [SerializeField] private TMP_Text quantityText;
+    [SerializeField] private Image itemImage;
+    [SerializeField] private int maxStackSize = 99;
+
+    // Selected Item
+    [SerializeField] public GameObject selectedPanel;
+    public bool isItemSelected;
+
+    // The full item data stored in this slot (the details panel needs it)
+    public ItemDetails ItemDetails => itemDetails;
+    private ItemDetails itemDetails;
+
+    public InventoryManager inventoryManager;
+
     public void Start()
     {
         inventoryManager = FindAnyObjectByType<InventoryManager>();
-        selectedItem.SetActive(false);
-        isSelected = false;
     }
 
-    public void AddItem(ItemDetails itemDetails)
+    public void AddItem(ItemDetails item)
     {
-        itemName = itemDetails.ItemName;
-        itemIcon = itemDetails.ItemIcon;
-        AddQuantity(itemDetails.Quantity);
+        itemDetails = item;
+        itemName = item.ItemName;
+        itemIcon = item.ItemIcon;
+        AddQuantity(item.Quantity);
     }
-    
+
+    // The slot is empty as long as it holds no items
+    public bool IsEmpty => itemQuantity <= 0;
+
+    // Check conditions for stacking items in the same slot
     public bool CanStackWith(string otherItemName)
     {
-        return !isFulled && itemName == otherItemName;
+        return !isFull && itemName == otherItemName;
     }
 
     public void AddQuantity(int amount)
     {
         itemQuantity += amount;
-        isFulled = itemQuantity >= maxStackSize;
-
+        isFull = itemQuantity >= maxStackSize;
+        
         quantityText.text = itemQuantity.ToString();
         quantityText.enabled = true;
-        itemIconImage.sprite = itemIcon;
+        itemImage.sprite = itemIcon;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -54,23 +64,24 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         {
             LeftClick();
         }
+        
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             RightClick();
         }
     }
-
     private void LeftClick()
     {
-        inventoryManager.DesselectAllSlots();
-        Debug.Log("Left click on item: " + itemName);
-        selectedItem.SetActive(true);
-        isSelected = true;
-        
+        if (IsEmpty || inventoryManager == null)
+        {
+            return; // empty slot: nothing to show
+        }
+
+        inventoryManager.SelectSlot(this);
     }
     private void RightClick()
     {
-        Debug.Log("Right click on item: " + itemName);
         
-    }   
+        Debug.Log("Right Clicked on ");
+    }
 }
