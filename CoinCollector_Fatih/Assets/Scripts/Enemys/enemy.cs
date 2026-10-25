@@ -3,23 +3,22 @@ using System;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] private int hp = 1000;
-    [SerializeField] private int damageSaatTabrakan = 1;
+    [SerializeField] private int hp;
+    [SerializeField] private int damageSaatTabrakan;
 
-    public float ms = 2f;
+    public float ms;
     private Vector2 tujuanPatrol;
-    private Vector2 titikAwal;
+    [SerializeField] private Vector2 titikAwal;
 
-    [SerializeField] private float radiusPatrol = 3f;
+    [SerializeField] private float radiusPatrol;
 
     protected Transform player;
 
     [Header("State Machine")]
-    [SerializeField] private float JarakDeteksi = 6f;
-    [SerializeField] private float JarakSerang = 1.5f;
-    [SerializeField] private float JedaSerang = 2f;
+    [SerializeField] private float JarakDeteksi;
+    [SerializeField] private float JarakSerang;
+    [SerializeField] private float JedaSerang;
 
-    // State Now
     private StateZombie state = StateZombie.IDLE;
     private float waktuSerangTerakhir;
 
@@ -86,8 +85,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
     }
 
-    // Dipanggil otomatis oleh Unity saat collider enemy menabrak collider lain.
-    // Karena ada di class induk, SEMUA turunan zombie ikut punya perilaku ini.
     void PerilakuIdle()
     {
     }
@@ -141,7 +138,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         Debug.Log("Enemy mati!");
 
-        // DITAMBAHKAN: menyiarkan event bahwa enemy ini sudah mati.
         OnZombieMati?.Invoke(this);
 
         Destroy(gameObject);

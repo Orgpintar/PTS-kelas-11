@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class ScoreManager : MonoBehaviour
 {
     public TMP_Text scoreText;
     private int score = 0;

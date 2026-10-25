@@ -3,17 +3,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float kecepatan = 5f;
+    private Animator animator;
+    public float kecepatan;
     private Vector2 arahGerak;
     private Rigidbody2D rb;
-    public GameManager gameManager;
+    public ScoreManager ScoreManager;
     private int skor = 0; 
-    [SerializeField] private int damageKeZombie = 10;
+    [SerializeField] private int damageKeZombie;
 
     InputAction moveAction;
     
     void Start()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         moveAction = InputSystem.actions.FindAction("Move");
     }
@@ -21,6 +23,30 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Move();
+        PlayerAnimation();
+    }
+
+    void PlayerAnimation()
+    {
+        if (arahGerak.x < 0)
+        {
+            animator.SetInteger("Direction", 3);
+        }
+        else if (arahGerak.x > 0)
+        {
+            animator.SetInteger("Direction", 2);
+        }
+        else if (arahGerak.y > 0)
+        {
+            animator.SetInteger("Direction", 1);
+        }
+        else if (arahGerak.y < 0)
+        {
+            animator.SetInteger("Direction", 0);
+        }
+
+        animator.SetBool("IsMoving", arahGerak.sqrMagnitude > 0);
+            
     }
 
     void Move()
@@ -35,18 +61,16 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
 {
-    // Saat Player mengambil Coin
     if (other.CompareTag("Coin"))
     {
         Destroy(other.gameObject);
 
         skor += 1;
-        gameManager.AddScore();
+        ScoreManager.AddScore();
 
         Debug.Log("Skor: " + skor);
     }
 
-    // Saat Player mengenai Enemy
     else if (other.CompareTag("Enemy"))
     {
         IDamageable zombie =
